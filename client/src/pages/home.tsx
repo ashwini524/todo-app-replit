@@ -167,7 +167,7 @@ export default function Home() {
                         <button
                           onClick={() => toggleTaskMutation.mutate(task)}
                           disabled={toggleTaskMutation.isPending}
-                          className="flex-shrink-0 text-muted-foreground hover:text-primary transition-colors"
+                          className="flex-shrink-0 text-muted-foreground hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           data-testid={`button-toggle-${task.id}`}
                         >
                           <Circle className="w-5 h-5" />
@@ -212,7 +212,7 @@ export default function Home() {
                         <button
                           onClick={() => toggleTaskMutation.mutate(task)}
                           disabled={toggleTaskMutation.isPending}
-                          className="flex-shrink-0 text-primary transition-colors"
+                          className="flex-shrink-0 text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           data-testid={`button-toggle-${task.id}`}
                         >
                           <CheckCircle2 className="w-5 h-5" />
@@ -247,7 +247,7 @@ export default function Home() {
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               {activeTasks.length === 0
-                ? "All tasks completed! 🎉"
+                ? "All tasks completed!"
                 : `${activeTasks.length} ${activeTasks.length === 1 ? 'task' : 'tasks'} remaining`}
             </p>
           </div>

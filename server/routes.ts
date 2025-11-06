@@ -21,6 +21,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid task data", details: result.error });
       }
 
+      if (!result.data.text || !result.data.text.trim()) {
+        return res.status(400).json({ error: "Task text cannot be empty" });
+      }
+
       const task = await storage.createTask(result.data);
       res.status(201).json(task);
     } catch (error) {

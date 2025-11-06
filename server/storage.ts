@@ -1,37 +1,56 @@
-import { type User, type InsertUser } from "@shared/schema";
+import { type Task, type InsertTask } from "@shared/schema";
 import { randomUUID } from "crypto";
 
-// modify the interface with any CRUD methods
-// you might need
-
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  getAllTasks(): Promise<Task[]>;
+  getTask(id: string): Promise<Task | undefined>;
+  createTask(task: InsertTask): Promise<Task>;
+  updateTask(id: string, updates: Partial<InsertTask>): Promise<Task | undefined>;
+  deleteTask(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
+  private tasks: Map<string, Task>;
 
   constructor() {
-    this.users = new Map();
+    this.tasks = new Map();
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async getAllTasks(): Promise<Task[]> {
+    return Array.from(this.tasks.values());
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+  async getTask(id: string): Promise<Task | undefined> {
+    return this.tasks.get(id);
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
+  async createTask(insertTask: InsertTask): Promise<Task> {
     const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+    const task: Task = { 
+      id, 
+      text: insertTask.text,
+      completed: insertTask.completed ?? false
+    };
+    this.tasks.set(id, task);
+    return task;
+  }
+
+  async updateTask(id: string, updates: Partial<InsertTask>): Promise<Task | undefined> {
+    const task = this.tasks.get(id);
+    if (!task) {
+      return undefined;
+    }
+    
+    const updatedTask: Task = {
+      ...task,
+      ...updates,
+    };
+    this.tasks.set(id, updatedTask);
+    return updatedTask;
+  }
+
+  async deleteTask(id: string): Promise<boolean> {
+    return this.tasks.delete(id);
   }
 }
 
